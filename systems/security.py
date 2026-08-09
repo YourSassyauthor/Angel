@@ -10,7 +10,10 @@ from core.repository import (
 )
 
 
-_message_history: dict[int, deque[float]] = defaultdict(
+_message_history: dict[
+    tuple[int, int],
+    deque[float],
+] = defaultdict(
     lambda: deque(maxlen=20)
 )
 
@@ -19,6 +22,7 @@ def normalize_text(text: str) -> str:
     """
     Normalize message text for blacklist detection.
     """
+
     text = text.lower()
 
     # Replace punctuation with spaces.
@@ -89,12 +93,18 @@ async def analyze_message(
         return {
             "ignored": True,
             "spam": False,
+            "messages_last_5_seconds": 0,
             "blacklist_matches": [],
         }
 
     now = time.monotonic()
 
-    history = _message_history[message.author.id]
+    history_key = (
+        message.guild.id,
+        message.author.id,
+    )
+
+    history = _message_history[history_key]
 
     history.append(now)
 
