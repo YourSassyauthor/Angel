@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from core.database import db
 from core.repository import ensure_guild, ensure_members
+
 from core.events.guilds import handle_guild_available
 from core.events.members import handle_member_join
 from core.events.messages import handle_message
@@ -52,7 +53,10 @@ class Angel(commands.Bot):
                 await ensure_guild(guild)
                 await ensure_members(guild.id, list(guild.members))
 
-                print(f"✅ Database synced: {guild.name}")
+                print(
+                    f"✅ Database synced: "
+                    f"{guild.name}"
+                )
 
             except Exception as e:
                 print(
@@ -71,6 +75,7 @@ class Angel(commands.Bot):
     async def on_message(self, message: discord.Message):
         await handle_message(message)
 
+        # Keep prefix commands working.
         await self.process_commands(message)
 
     async def close(self):
@@ -87,12 +92,15 @@ async def main():
     token = os.getenv("DISCORD_TOKEN")
 
     if not token:
-        raise RuntimeError("DISCORD_TOKEN is missing from .env")
+        raise RuntimeError(
+            "DISCORD_TOKEN is missing from .env"
+        )
 
     bot = Angel()
 
     try:
         await bot.start(token)
+
     finally:
         if not bot.is_closed():
             await bot.close()
