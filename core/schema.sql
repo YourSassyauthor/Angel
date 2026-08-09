@@ -26,8 +26,8 @@ CREATE TABLE IF NOT EXISTS members (
     username TEXT,
     display_name TEXT,
 
-    trust_score INTEGER NOT NULL DEFAULT 50,
-    goodwill_score INTEGER NOT NULL DEFAULT 50,
+    trust_score INTEGER NOT NULL DEFAULT 100,
+    goodwill_score INTEGER NOT NULL DEFAULT 100,
 
     warnings INTEGER NOT NULL DEFAULT 0,
 
